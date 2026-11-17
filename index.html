@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OWLCORD — converse, jogue e fique perto</title>
+<meta name="description" content="OWLCORD: seu próprio servidor de chat e voz, com canais, cargos e chamadas. Baixe o app para Android e Windows." />
+<link rel="icon" href="assets/logo.png" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  :root {
+    --bg: #070b14;
+    --bg-soft: #0b1220;
+    --panel: #101a2e;
+    --panel-2: #131f36;
+    --line: rgba(255,255,255,.08);
+    --text: #eef2ff;
+    --muted: #9aa7c7;
+    --violet: #8b5cf6;
+    --purple: #7c3aed;
+    --cyan: #22d3ee;
+    --green: #23a55a;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(900px 500px at 15% -10%, rgba(124,58,237,.35), transparent 60%),
+      radial-gradient(800px 500px at 90% 0%, rgba(34,211,238,.16), transparent 55%),
+      var(--bg);
+    color: var(--text);
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap { width: min(1120px, 92vw); margin: 0 auto; }
+
+  /* NAV */
+  header.nav {
+    position: sticky; top: 0; z-index: 30;
+    backdrop-filter: blur(14px);
+    background: rgba(7,11,20,.72);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .08em; }
+  .brand img { width: 34px; height: 34px; border-radius: 10px; box-shadow: 0 0 24px rgba(139,92,246,.5); }
+  .nav-links { display: flex; gap: 26px; font-size: 14px; color: var(--muted); }
+  .nav-links a:hover { color: #fff; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+    border-radius: 12px; padding: 12px 20px; font-weight: 700; font-size: 14px;
+    border: 1px solid transparent; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    white-space: nowrap;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--violet), var(--purple));
+    color: #fff; box-shadow: 0 12px 30px rgba(124,58,237,.4);
+  }
+  .btn-primary:hover { box-shadow: 0 16px 38px rgba(124,58,237,.55); }
+  .btn-ghost { background: rgba(255,255,255,.06); border-color: var(--line); color: var(--text); }
+  .btn-ghost:hover { background: rgba(255,255,255,.11); }
+  .nav .btn { padding: 9px 16px; }
+
+  /* HERO */
+  .hero { padding: 84px 0 64px; display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: center; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    color: #c4b5fd; background: rgba(139,92,246,.14);
+    border: 1px solid rgba(139,92,246,.35); padding: 7px 12px; border-radius: 999px;
+  }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); }
+  h1 { font-size: clamp(38px, 5.2vw, 62px); line-height: 1.03; margin: 22px 0 18px; letter-spacing: -.03em; font-weight: 900; }
+  h1 .grad {
+    background: linear-gradient(100deg, #c4b5fd, #8b5cf6 40%, #22d3ee);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .lede { color: var(--muted); font-size: 17px; max-width: 47ch; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .meta { display: flex; gap: 22px; margin-top: 26px; font-size: 12.5px; color: #7f8dae; }
+  .meta b { color: #cfd8f5; font-weight: 700; }
+
+  /* App mock */
+  .mock {
+    position: relative; border-radius: 20px; overflow: hidden;
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, #0e1729, #0a1020);
+    box-shadow: 0 40px 90px rgba(0,0,0,.55);
+  }
+  .mock-bar { display: flex; align-items: center; gap: 6px; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+  .mock-bar i { width: 10px; height: 10px; border-radius: 50%; background: #2a3550; display: block; }
+  .mock-body { display: grid; grid-template-columns: 58px 168px 1fr; min-height: 330px; }
+  .rail { background: #08101d; padding: 14px 0; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .rail span { width: 34px; height: 34px; border-radius: 12px; background: #16223a; }
+  .rail span.active { background: linear-gradient(135deg, var(--violet), var(--purple)); box-shadow: 0 0 18px rgba(124,58,237,.6); }
+  .side { background: #0b1424; border-right: 1px solid var(--line); padding: 14px 12px; font-size: 12px; color: #8291b3; }
+  .side p { margin: 0 0 10px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #5d6a88; }
+  .side .row { padding: 6px 8px; border-radius: 7px; margin-bottom: 3px; }
+  .side .row.sel { background: rgba(139,92,246,.2); color: #ddd6fe; }
+  .chat { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .msg { display: flex; gap: 10px; }
+  .avatar { width: 30px; height: 30px; border-radius: 50%; flex: 0 0 auto; background: linear-gradient(135deg,#8b5cf6,#22d3ee); }
+  .avatar.b { background: linear-gradient(135deg,#f472b6,#f59e0b); }
+  .bubble { font-size: 12px; color: #c8d3ee; }
+  .bubble b { display: block; color: #fff; font-size: 12px; margin-bottom: 2px; }
+  .bubble span { display: block; background: #121d33; border-radius: 9px; padding: 8px 11px; margin-top: 5px; color: #a9b6d6; }
+
+  /* sections */
+  section { padding: 62px 0; }
+  h2 { font-size: clamp(26px, 3.2vw, 36px); letter-spacing: -.02em; margin: 0 0 10px; font-weight: 850; }
+  .sub { color: var(--muted); margin: 0 0 32px; max-width: 60ch; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .card {
+    background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.015));
+    border: 1px solid var(--line); border-radius: 16px; padding: 22px;
+    transition: transform .2s ease, border-color .2s ease;
+  }
+  .card:hover { transform: translateY(-3px); border-color: rgba(139,92,246,.45); }
+  .ico {
+    width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center;
+    background: rgba(139,92,246,.16); color: #c4b5fd; margin-bottom: 14px; font-size: 18px;
+  }
+  .card h3 { margin: 0 0 6px; font-size: 15.5px; }
+  .card p { margin: 0; color: var(--muted); font-size: 13.5px; }
+
+  /* download */
+  .download {
+    border: 1px solid var(--line); border-radius: 22px; padding: 34px;
+    background:
+      radial-gradient(600px 240px at 85% 0%, rgba(139,92,246,.28), transparent 70%),
+      linear-gradient(180deg, #0d1626, #0a1120);
+    display: grid; grid-template-columns: 1.2fr .8fr; gap: 28px; align-items: center;
+  }
+  .dl-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #9ff0c2; background: rgba(35,165,90,.14); border: 1px solid rgba(35,165,90,.35); padding: 6px 11px; border-radius: 999px; font-weight: 700; }
+  .dl-actions { display: flex; flex-direction: column; gap: 10px; }
+  .dl-note { font-size: 12px; color: #71809f; text-align: center; }
+
+  /* steps */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; counter-reset: s; }
+  .step { position: relative; padding: 22px 22px 22px 62px; border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.03); }
+  .step::before {
+    counter-increment: s; content: counter(s);
+    position: absolute; left: 20px; top: 20px;
+    width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center;
+    background: linear-gradient(135deg, var(--violet), var(--purple)); font-weight: 800; font-size: 14px;
+  }
+  .step h3 { margin: 0 0 6px; font-size: 15px; }
+  .step p { margin: 0; font-size: 13.5px; color: var(--muted); }
+  code { background: rgba(255,255,255,.08); padding: 2px 6px; border-radius: 6px; font-size: 12.5px; }
+
+  footer { border-top: 1px solid var(--line); padding: 30px 0; color: #6b7a99; font-size: 13px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+  @media (max-width: 960px) {
+    .hero { grid-template-columns: 1fr; gap: 40px; padding-top: 56px; }
+    .grid, .steps { grid-template-columns: 1fr 1fr; }
+    .download { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 620px) {
+    .grid, .steps { grid-template-columns: 1fr; }
+    .mock-body { grid-template-columns: 50px 1fr; }
+    .side { display: none; }
+    .cta .btn { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top">
+      <img src="assets/logo.png" alt="OWLCORD" />
+      OWLCORD
+    </a>
+    <nav class="nav-links">
+      <a href="#recursos">Recursos</a>
+      <a href="#download">Download</a>
+      <a href="#como">Como começar</a>
+    </nav>
+    <a class="btn btn-primary" href="https://github.com/alexithebest/owlcord-releases/releases/download/v0.1.5-android/OWLCORD-0.1.5.apk">Baixar APK</a>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <div>
+      <span class="pill"><span class="dot"></span> v0.1.5 disponível</span>
+      <h1>Seu servidor.<br /><span class="grad">Suas regras.</span></h1>
+      <p class="lede">
+        OWLCORD é o seu espaço para conversar por texto e voz com os amigos:
+        canais organizados, cargos, chamadas e aquele visual escuro que você já ama.
+      </p>
+      <div class="cta">
+        <a class="btn btn-primary" href="https://github.com/alexithebest/owlcord-releases/releases/download/v0.1.5-android/OWLCORD-0.1.5.apk">
+          ⬇ Baixar para Android
+        </a>
+        <a class="btn btn-ghost" href="#como">Como configurar</a>
+      </div>
+      <div class="meta">
+        <div><b>13,5 MB</b> · APK</div>
+        <div><b>Android 6+</b></div>
+        <div><b>Grátis</b></div>
+      </div>
+    </div>
+
+    <div class="mock" aria-hidden="true">
+      <div class="mock-bar"><i></i><i></i><i></i></div>
+      <div class="mock-body">
+        <div class="rail">
+          <span class="active"></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="side">
+          <p>Meu servidor</p>
+          <div class="row sel"># geral</div>
+          <div class="row"># memes</div>
+          <div class="row"># jogos</div>
+          <p style="margin-top:14px">Voz</p>
+          <div class="row">🔊 Sala principal</div>
+          <div class="row">🎮 Partida</div>
+        </div>
+        <div class="chat">
+          <div class="msg">
+            <div class="avatar"></div>
+            <div class="bubble"><b>Alex</b> bora jogar hoje?<span>entra na call às 20h</span></div>
+          </div>
+          <div class="msg">
+            <div class="avatar b"></div>
+            <div class="bubble"><b>Bia</b> tô dentro!<span>já criei o canal #partida</span></div>
+          </div>
+          <div class="msg">
+            <div class="avatar"></div>
+            <div class="bubble"><b>Alex</b> a coruja aprova 🦉</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="recursos">
+    <div class="wrap">
+      <h2>Tudo o que você espera</h2>
+      <p class="sub">Feito para grupos de amigos que querem um cantinho próprio — sem depender de servidores enormes.</p>
+      <div class="grid">
+        <div class="card">
+          <div class="ico">💬</div>
+          <h3>Canais de texto e voz</h3>
+          <p>Organize por categorias, com permissões e canais privados.</p>
+        </div>
+        <div class="card">
+          <div class="ico">🎙️</div>
+          <h3>Chamadas com tela</h3>
+          <p>Compartilhe a tela em alta resolução com um clique.</p>
+        </div>
+        <div class="card">
+          <div class="ico">🛡️</div>
+          <h3>Cargos e permissões</h3>
+          <p>Dê cargos, defina cores e controle quem pode o quê.</p>
+        </div>
+        <div class="card">
+          <div class="ico">🔔</div>
+          <h3>Notificações</h3>
+          <p>Avisos de menção e mensagens diretas, com sons suaves.</p>
+        </div>
+        <div class="card">
+          <div class="ico">🎨</div>
+          <h3>Temas</h3>
+          <p>Azul, claro ou escuro — escolha o clima do seu app.</p>
+        </div>
+        <div class="card">
+          <div class="ico">🚀</div>
+          <h3>Seu próprio servidor</h3>
+          <p>Hospede onde quiser e convide quem quiser com um link.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="download">
+    <div class="wrap">
+      <div class="download">
+        <div>
+          <span class="dl-badge">✓ Última versão · v0.1.5</span>
+          <h2 style="margin-top:16px">Baixe o OWLCORD</h2>
+          <p class="sub" style="margin-bottom:0">
+            Instale o APK no Android e conecte no seu servidor em menos de um minuto.
+          </p>
+        </div>
+        <div class="dl-actions">
+          <a class="btn btn-primary" href="https://github.com/alexithebest/owlcord-releases/releases/download/v0.1.5-android/OWLCORD-0.1.5.apk">⬇ OWLCORD-0.1.5.apk</a>
+          <a class="btn btn-ghost" href="https://github.com/alexithebest/owlcord-releases/releases/tag/v0.1.5-android">Ver detalhes da versão</a>
+          <span class="dl-note">Android 6 ou superior · 13,5 MB</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="como">
+    <div class="wrap">
+      <h2>Como começar</h2>
+      <p class="sub">Três passos e você já está conversando com o pessoal.</p>
+      <div class="steps">
+        <div class="step">
+          <h3>Instale o APK</h3>
+          <p>Abra o arquivo baixado e permita “instalar de fontes desconhecidas”.</p>
+        </div>
+        <div class="step">
+          <h3>Conecte no servidor</h3>
+          <p>Em <b>Configurações → Conexão</b>, cole a URL da API e toque em “Salvar e reconectar”.</p>
+        </div>
+        <div class="step">
+          <h3>Crie seu servidor</h3>
+          <p>Escolha o nome, suba um ícone e convide os amigos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <footer>
+      <span>© 2026 OWLCORD — feito para amigos.</span>
+      <span>
+        <a href="https://github.com/alexithebest/owlcord-releases/releases" style="color:#93a4c9">Todas as versões</a>
+      </span>
+    </footer>
+  </div>
+</main>
+
+</body>
+</html>
